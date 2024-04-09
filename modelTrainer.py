@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, RepeatVector, TimeDistributed, Dense, Dropout
-from tensorflow.keras.callbacks import EarlyStopping
+from keras.models import Sequential
+from keras.layers import LSTM, RepeatVector, TimeDistributed, Dense, Dropout
+from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
@@ -24,8 +24,7 @@ def train_model(training_dir, sequence_length, test_size):
     n_features = flattened_sequences.shape[1]
 
     num_sequences = len(flattened_sequences) // sequence_length
-    sequences = flattened_sequences[:num_sequences * sequence_length].reshape(
-        (num_sequences, sequence_length, n_features))
+    sequences = flattened_sequences[:num_sequences * sequence_length].reshape((num_sequences, sequence_length, n_features))
 
     X_train, X_test = train_test_split(sequences, test_size=test_size, random_state=42)
 

@@ -4,6 +4,7 @@ import os
 from ultralytics import YOLO
 import tkinter as tk
 from tkinter import filedialog
+from tqdm import tqdm
 
 def load_model(model_path):
     model = YOLO(model_path)
@@ -39,26 +40,28 @@ def process_videos(model_path, record_video, record_csv, selected_videos):
                                   (int(cap.get(3)), int(cap.get(4))))
 
         frame_idx = 0
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        with tqdm(total=total_frames, desc=os.path.basename(video), unit='frame') as pbar:
+            while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    break
 
-            cursor = process_frame(frame, model)
-            if cursor is not None:
-                x1, y1, x2, y2, conf = cursor
-                if record_csv:
-                    cursor_data.append([frame_idx / cap.get(cv2.CAP_PROP_FPS), x1, y1])
+                cursor = process_frame(frame, model)
+                if cursor is not None:
+                    x1, y1, x2, y2, conf = cursor
+                    if record_csv:
+                        cursor_data.append([frame_idx / cap.get(cv2.CAP_PROP_FPS), x1, y1])
+
+                    if record_video:
+                        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                        cv2.putText(frame, f'Conf: {conf:.2f}', (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
                 if record_video:
-                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                    cv2.putText(frame, f'Conf: {conf:.2f}', (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9,
-                                (0, 255, 0), 2)
+                    out.write(frame)
 
-            if record_video:
-                out.write(frame)
-
-            frame_idx += 1
+                frame_idx += 1
+                pbar.update(1)
 
         cap.release()
         if record_video:
