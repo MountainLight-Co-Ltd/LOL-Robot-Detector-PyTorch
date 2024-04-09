@@ -13,10 +13,8 @@ Once Git LFS is installed, you can clone the repository as usual, and the large 
 
 3. Install the required dependencies by running `pip install -r requirements.txt` from the root directory of the project.
 
-## 2024/3/30 Updates:
-If you cannot clone the Yolo models, please use the following Google Drive links for model downloading.
-1. cursorDetector_n.pt: https://drive.google.com/file/d/1FN_Xfey1k--QKS9_ps5i_YDrvEmx2KdK/view?usp=sharing
-2. cursorDetector_x.pt: https://drive.google.com/file/d/1FZULNgxbfAVGk-93SG9VJF7XcLAKwo82/view?usp=sharing
+## TODO:
+Testing version
 
 ## Usage
 
