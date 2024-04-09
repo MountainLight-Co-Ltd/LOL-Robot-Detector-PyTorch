@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from joblib import load
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 raw_data_dir = 'material_for_analysis'
 results_dir = 'analysis_results'
