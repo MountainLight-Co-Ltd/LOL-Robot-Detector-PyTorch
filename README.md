@@ -14,8 +14,7 @@ Once Git LFS is installed, you can clone the repository as usual, and the large 
 3. Install the required dependencies by running `pip install -r requirements.txt` from the root directory of the project.
 
 ## TODO:
-Testing version
-
+TESTINGG, don't use it.
 ## Usage
 
 1. **Data Preparation**: Use `cursurDetector.py` to read the mouse positions of your raw videos.
