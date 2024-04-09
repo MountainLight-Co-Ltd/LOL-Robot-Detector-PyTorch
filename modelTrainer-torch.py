@@ -8,6 +8,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+print(device)
+
 data_path = 'ready_for_training'
 
 def load_and_combine_csv(directory):
@@ -43,9 +46,10 @@ def train_model(training_dir, sequence_length, test_size):
             self.decoder = nn.LSTM(input_size=hidden_size, hidden_size=input_size, num_layers=num_layers, batch_first=True)
         
         def forward(self, x):
-            _, (hidden, _) = self.encoder(x)
-            x, _ = self.decoder(hidden)
-            return x
+            _, (hidden, cell) = self.encoder(x)
+            outputs, _ = self.decoder(x, (hidden, cell))
+            return outputs
+
 
     model = LSTM_Autoencoder(input_size=n_features, hidden_size=64, num_layers=1)
 
