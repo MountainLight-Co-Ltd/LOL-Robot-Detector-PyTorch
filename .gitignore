@@ -38,6 +38,7 @@ package-lock.json
 /output
 /projects
 /pretrained
+/lightning_logs
 
 abandon
 unused
