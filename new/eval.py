@@ -1,12 +1,14 @@
 from model import AutoEncoder_LSTM, AutoEncoder_Wrapper
 
+import torch
+
 import os
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
 from joblib import load
 
-raw_data_dir = 'material_for_analysis'
+raw_data_dir = 'mouse_positions'
+# raw_data_dir = 'material_for_analysis'
 results_dir = 'analysis_results'
 model_path = 'mouse_movement_anomaly_detection_model.pth'
 scaler_path = 'universal_scaler.joblib'
@@ -21,6 +23,9 @@ n_features = 9
 model = AutoEncoder_LSTM(n_features)
 model_wrapper = AutoEncoder_Wrapper(model)
 model_wrapper.load_model(model_path)
+model_wrapper.requires_grad_(False)
+if torch.cuda.is_available():
+    model.cuda()
 
 
 def calculate_features(data):
@@ -46,13 +51,16 @@ def analyze_data(file_path):
     data = pd.read_csv(file_path)
     features = calculate_features(data)
     normalized_features = scaler.transform(features)
-
     rows_to_use = (normalized_features.shape[0] // sequence_length) * sequence_length
     normalized_features = normalized_features[:rows_to_use]
 
     sequences = normalized_features.reshape(-1, sequence_length, n_features)
 
-    reconstructed = model_wrapper(sequences)
+    seq_tensor = torch.from_numpy(sequences).float()
+    if torch.cuda.is_available():
+        seq_tensor = seq_tensor.cuda()
+    reconstructed = model_wrapper(seq_tensor)
+    reconstructed = reconstructed.cpu().numpy()
 
     mse = np.mean(np.power(sequences - reconstructed, 2), axis=(1, 2))
     return mse
