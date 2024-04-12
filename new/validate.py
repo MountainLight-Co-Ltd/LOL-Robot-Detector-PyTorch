@@ -1,4 +1,4 @@
-# python new/train.py
+# python new/validate.py
 # val_loss           0.0001406194205628708
 
 from model import AutoEncoder_LSTM, AutoEncoder_Wrapper
