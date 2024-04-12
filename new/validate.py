@@ -6,7 +6,6 @@ import torch
 
 import os
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 data_path = 'ready_for_training'
 model_path = 'mouse_movement_anomaly_detection_model.pth'
