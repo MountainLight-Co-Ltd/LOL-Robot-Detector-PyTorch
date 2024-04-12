@@ -44,7 +44,7 @@ def train_model(training_dir, sequence_length, test_size):
     plt.legend()
     plt.show()
 
-    model_wrapper.save('mouse_movement_anomaly_detection_model.pth')
+    model_wrapper.save_model('mouse_movement_anomaly_detection_model.pth')
 
 
 train_model(data_path, 10, 0.2)

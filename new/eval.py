@@ -19,8 +19,8 @@ sequence_length = 30
 n_features = 9
 
 model = AutoEncoder_LSTM(n_features)
-model.load_state_dict(model_path)
 model_wrapper = AutoEncoder_Wrapper(model)
+model_wrapper.load_model(model_path)
 
 
 def calculate_features(data):

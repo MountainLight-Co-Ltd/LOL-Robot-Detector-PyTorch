@@ -105,5 +105,8 @@ class AutoEncoder_Wrapper(pl.LightningModule):
                 batch_size=batch_size),
         )
 
-    def save(self, file_path):
+    def save_model(self, file_path):
         torch.save(self.model.state_dict(), file_path)
+
+    def load_model(self, file_path):
+        self.model.load_state_dict(torch.load(file_path, map_location='cpu'))
