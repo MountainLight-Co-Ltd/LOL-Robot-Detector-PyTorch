@@ -83,27 +83,22 @@ class AutoEncoder_Wrapper(pl.LightningModule):
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=1e-3)
 
-    def get_trainer(self, num_epochs: int):
+    def get_trainer(self, num_epochs: int, **kwargs):
         return pl.Trainer(
             max_epochs=num_epochs,
             callbacks=[pl.callbacks.EarlyStopping(
-                monitor='val_loss', patience=10, mode='min')]
+                monitor='val_loss', patience=10, mode='min')],
+            **kwargs,
         )
 
     def get_dataloader(
         self,
-        X_train: np.ndarray,
-        X_test: np.ndarray,
+        data: np.ndarray,
         batch_size: int = 32,
-    ) -> tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
-        return (
-            torch.utils.data.DataLoader(
-                torch.utils.data.TensorDataset(torch.from_numpy(X_train).float()),
-                batch_size=batch_size),
-            torch.utils.data.DataLoader(
-                torch.utils.data.TensorDataset(torch.from_numpy(X_test).float()),
-                batch_size=batch_size),
-        )
+    ) -> torch.utils.data.DataLoader:
+        return torch.utils.data.DataLoader(
+            torch.utils.data.TensorDataset(torch.from_numpy(data).float()),
+            batch_size=batch_size)
 
     def save_model(self, file_path):
         torch.save(self.model.state_dict(), file_path)
