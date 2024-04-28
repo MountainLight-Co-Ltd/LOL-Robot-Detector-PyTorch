@@ -4,27 +4,73 @@ The LOL-Robot-Detector is a tool designed to identify and analyze cheating behav
 
 ## Installation
 
-This project uses Git LFS to manage large files, such as the neural network models `cursorDetector_n.pt` and `cursorDetector_x.pt`. Before cloning the repository or pulling updates, ensure Git LFS is installed on your system:
+1. Install PyTorch using the link below <https://pytorch.org/get-started/locally/>. Remember to download the version that suits your operating system and environment.
 
-1. Download and install Git LFS from [https://git-lfs.github.com/](https://git-lfs.github.com/).
-2. Set up Git LFS for your user account by running `git lfs install` in your terminal.
+2. Install the required dependencies
 
-Once Git LFS is installed, you can clone the repository as usual, and the large files will be automatically handled by Git LFS.
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-3. Install the required dependencies by running `pip install -r requirements.txt` from the root directory of the project.
+## Update Log
 
-## TODO:
-TESTING, don't use it.
+### Apr 13, 2024
+
+The pre-trained model: `mouse_movement_anomaly_detection_model.pth`
+
+## TODO
+
+1. Demo
+2. Trasnformer
+3. ...
+
 ## Usage
 
-1. **Data Preparation**: Use `cursurDetector.py` to read the mouse positions of your raw videos.
-2. **Anomaly Detection**: Use 'analyzer.py' to investigate your raw mouse positions using existing models.
-3. **Train your own model**: If you wanna train your own model, use the 'dataModifier.py' to extract the features of your raw mouse positions and use 'universal_scaler' to standrize them. Then you can use 'modelTrainer.py' to train your own model.
-4. **Tip1**: Make sure you are consistently using 1080p, 30fps videos.
+- **Tip**: If you are using Windows System, please use `python` instead of `python3`.
+
+### Test
+
+- Run the following command in the Command Line with a `python3` command (for Ubuntu).
+
+    ```bash
+    python3 ./new/eval.py
+    ```
+
+### Train
+
+- Optional 1: Use our dataset
+  - The processed mouse positions is ready in the `ready_for_training` folder.
+  - Run `train.py` in the Command Line with a `python3` command (for Ubuntu).
+
+    ```bash
+    python3 ./new/train.py
+    ```
+
+  - The trained model is saved as `mouse_movement_anomaly_detection_model.pth`.
+  - Since we have already uploaded the pre-trained model named `mouse_movement_anomaly_detection_model.pth`, you can change the name you want based on your needs from the file `./new/train.py` line $51$.
+
+- Optional 2: Use your own dataset
+
+  - **Data Preparation**: Use `cursurDetector.py` to read the mouse positions of your raw videos. The file will be saved in the `./mouse_positions` folder.
+  - **Scaler Preparation**: Use `dataModifier.py` to extract the features of your raw mouse positions and use 'universal_scaler' to standrize them.
+  - **Model Training**: Use `./new/train.py` to train your own model.
+  - **Tip**: Make sure you are consistently using 1080p, 30fps videos.
+
+### Validate
+
+- Run the following command in the Command Line with a `python3` command (for Ubuntu).
+
+    ```bash
+    python3 ./new/validate.py
+    ```
+
+    | Validate metric | DataLoader 0           |
+    | --------------- | ---------------------- |
+    | val_loss        | 0.00014062559057492763 |
 
 ## Contacts
 
-E-mail: solistoriashenny@gmail.com
+E-mail: <solistoriashenny@gmail.com>
 QQ: 3480547309
 
 ## License

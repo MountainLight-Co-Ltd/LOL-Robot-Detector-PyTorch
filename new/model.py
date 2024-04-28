@@ -1,5 +1,3 @@
-
-
 # Sequential([
 #         LSTM(64, activation='tanh', return_sequences=True),
 #         Dropout(0.2),  # Added dropout for regularization
@@ -21,14 +19,12 @@ class AutoEncoder_LSTM(torch.nn.Module):
         self.dropout = torch.nn.Dropout(0.2)
         # Encoder
         self.lstm1 = torch.nn.LSTM(
-            input_size=input_feats, hidden_size=128, batch_first=True)
-        self.lstm2 = torch.nn.LSTM(
-            input_size=128, hidden_size=64, batch_first=True)
+            input_size=input_feats, hidden_size=128, batch_first=True
+        )
+        self.lstm2 = torch.nn.LSTM(input_size=128, hidden_size=64, batch_first=True)
         # Decoder
-        self.lstm3 = torch.nn.LSTM(
-            input_size=64, hidden_size=64, batch_first=True)
-        self.lstm4 = torch.nn.LSTM(
-            input_size=64, hidden_size=128, batch_first=True)
+        self.lstm3 = torch.nn.LSTM(input_size=64, hidden_size=64, batch_first=True)
+        self.lstm4 = torch.nn.LSTM(input_size=64, hidden_size=128, batch_first=True)
 
         self.fc = torch.nn.Linear(128, input_feats)
 
@@ -71,13 +67,13 @@ class AutoEncoder_Wrapper(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x = batch[0]
         loss = self.loss_fn(self(x), x)  # 使用重建损失作为训练损失
-        self.log('train_loss', loss, prog_bar=True)
+        self.log("train_loss", loss, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x = batch[0]
         loss = self.loss_fn(self(x), x)  # 使用重建损失作为验证损失
-        self.log('val_loss', loss, prog_bar=True)
+        self.log("val_loss", loss, prog_bar=True)
         return loss
 
     def configure_optimizers(self):
@@ -86,8 +82,9 @@ class AutoEncoder_Wrapper(pl.LightningModule):
     def get_trainer(self, num_epochs: int, **kwargs):
         return pl.Trainer(
             max_epochs=num_epochs,
-            callbacks=[pl.callbacks.EarlyStopping(
-                monitor='val_loss', patience=10, mode='min')],
+            callbacks=[
+                pl.callbacks.EarlyStopping(monitor="val_loss", patience=10, mode="min")
+            ],
             **kwargs,
         )
 
@@ -98,10 +95,11 @@ class AutoEncoder_Wrapper(pl.LightningModule):
     ) -> torch.utils.data.DataLoader:
         return torch.utils.data.DataLoader(
             torch.utils.data.TensorDataset(torch.from_numpy(data).float()),
-            batch_size=batch_size)
+            batch_size=batch_size,
+        )
 
     def save_model(self, file_path):
         torch.save(self.model.state_dict(), file_path)
 
     def load_model(self, file_path):
-        self.model.load_state_dict(torch.load(file_path, map_location='cpu'))
+        self.model.load_state_dict(torch.load(file_path, map_location="cpu"))

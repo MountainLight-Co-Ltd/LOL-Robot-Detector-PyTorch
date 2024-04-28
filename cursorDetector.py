@@ -6,9 +6,11 @@ import tkinter as tk
 from tkinter import filedialog
 from tqdm import tqdm
 
+
 def load_model(model_path):
     model = YOLO(model_path)
     return model
+
 
 def process_frame(frame, model):
     results = model(frame)
@@ -27,6 +29,7 @@ def process_frame(frame, model):
             return None
     return None
 
+
 def process_videos(model_path, record_video, record_csv, selected_videos):
     model = load_model(model_path)
 
@@ -35,13 +38,19 @@ def process_videos(model_path, record_video, record_csv, selected_videos):
         cursor_data = []
 
         if record_video:
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            out = cv2.VideoWriter(f'processed_videos/{os.path.basename(video)[:-4]}_processed.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS),
-                                  (int(cap.get(3)), int(cap.get(4))))
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            out = cv2.VideoWriter(
+                f"processed_videos/{os.path.basename(video)[:-4]}_processed.mp4",
+                fourcc,
+                cap.get(cv2.CAP_PROP_FPS),
+                (int(cap.get(3)), int(cap.get(4))),
+            )
 
         frame_idx = 0
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        with tqdm(total=total_frames, desc=os.path.basename(video), unit='frame') as pbar:
+        with tqdm(
+            total=total_frames, desc=os.path.basename(video), unit="frame"
+        ) as pbar:
             while cap.isOpened():
                 ret, frame = cap.read()
                 if not ret:
@@ -51,11 +60,27 @@ def process_videos(model_path, record_video, record_csv, selected_videos):
                 if cursor is not None:
                     x1, y1, x2, y2, conf = cursor
                     if record_csv:
-                        cursor_data.append([frame_idx / cap.get(cv2.CAP_PROP_FPS), x1, y1])
+                        cursor_data.append(
+                            [frame_idx / cap.get(cv2.CAP_PROP_FPS), x1, y1]
+                        )
 
                     if record_video:
-                        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                        cv2.putText(frame, f'Conf: {conf:.2f}', (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                        cv2.rectangle(
+                            frame,
+                            (int(x1), int(y1)),
+                            (int(x2), int(y2)),
+                            (0, 255, 0),
+                            2,
+                        )
+                        cv2.putText(
+                            frame,
+                            f"Conf: {conf:.2f}",
+                            (int(x1), int(y1) - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.9,
+                            (0, 255, 0),
+                            2,
+                        )
 
                 if record_video:
                     out.write(frame)
@@ -68,23 +93,27 @@ def process_videos(model_path, record_video, record_csv, selected_videos):
             out.release()
 
         if record_csv:
-            df = pd.DataFrame(cursor_data, columns=['Time', 'X', 'Y'])
-            df.to_csv(f'mouse_positions/{os.path.basename(video)[:-4]}.csv', index=False)
+            df = pd.DataFrame(cursor_data, columns=["Time", "X", "Y"])
+            df.to_csv(
+                f"mouse_positions/{os.path.basename(video)[:-4]}.csv", index=False
+            )
+
 
 def select_files():
     root = tk.Tk()
     root.withdraw()  # Hide the main window
-    file_paths = filedialog.askopenfilenames(title='Select Video Files')
+    file_paths = filedialog.askopenfilenames(title="Select Video Files")
     return list(file_paths)
 
-record_video = input("Do you want the boxed videos? (y/n): ").lower() == 'y'
-record_csv = input("Do you want the mouse positions? (y/n): ").lower() == 'y'
+
+record_video = input("Do you want the boxed videos? (y/n): ").lower() == "y"
+record_csv = input("Do you want the mouse positions? (y/n): ").lower() == "y"
 
 selected_videos = select_files()
 
-os.makedirs('processed_videos', exist_ok=True)
-os.makedirs('mouse_positions', exist_ok=True)
+os.makedirs("processed_videos", exist_ok=True)
+os.makedirs("mouse_positions", exist_ok=True)
 
-model_path = 'cursorDetector_x.pt'
+model_path = "cursorDetector_x.pt"
 
 process_videos(model_path, record_video, record_csv, selected_videos)

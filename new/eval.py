@@ -7,11 +7,11 @@ import pandas as pd
 import numpy as np
 from joblib import load
 
-raw_data_dir = 'mouse_positions'
+raw_data_dir = "mouse_positions"
 # raw_data_dir = 'material_for_analysis'
-results_dir = 'analysis_results'
-model_path = 'mouse_movement_anomaly_detection_model.pth'
-scaler_path = 'universal_scaler.joblib'
+results_dir = "analysis_results"
+model_path = "mouse_movement_anomaly_detection_model.pth"
+scaler_path = "universal_scaler.joblib"
 
 os.makedirs(results_dir, exist_ok=True)
 
@@ -29,20 +29,22 @@ if torch.cuda.is_available():
 
 
 def calculate_features(data):
-    data['Time_Delta'] = data['Time'].diff().bfill()
+    data["Time_Delta"] = data["Time"].diff().bfill()
 
-    data['Velocity_X'] = data['X'].diff().fillna(0) / data['Time_Delta']
-    data['Velocity_Y'] = data['Y'].diff().fillna(0) / data['Time_Delta']
+    data["Velocity_X"] = data["X"].diff().fillna(0) / data["Time_Delta"]
+    data["Velocity_Y"] = data["Y"].diff().fillna(0) / data["Time_Delta"]
 
-    data['Acceleration_X'] = data['Velocity_X'].diff().fillna(0) / data['Time_Delta']
-    data['Acceleration_Y'] = data['Velocity_Y'].diff().fillna(0) / data['Time_Delta']
+    data["Acceleration_X"] = data["Velocity_X"].diff().fillna(0) / data["Time_Delta"]
+    data["Acceleration_Y"] = data["Velocity_Y"].diff().fillna(0) / data["Time_Delta"]
 
-    data['Angle'] = np.arctan2(data['Velocity_Y'], data['Velocity_X'])
-    data['Angular_Change'] = data['Angle'].diff().bfill()
+    data["Angle"] = np.arctan2(data["Velocity_Y"], data["Velocity_X"])
+    data["Angular_Change"] = data["Angle"].diff().bfill()
 
-    data['Distance'] = np.sqrt(data['X'].diff().fillna(0) ** 2 + data['Y'].diff().fillna(0) ** 2)
+    data["Distance"] = np.sqrt(
+        data["X"].diff().fillna(0) ** 2 + data["Y"].diff().fillna(0) ** 2
+    )
 
-    data = data.drop(['Time', 'Angle'], axis=1)
+    data = data.drop(["Time", "Angle"], axis=1)
 
     return data
 
@@ -67,7 +69,7 @@ def analyze_data(file_path):
 
 
 for filename in os.listdir(raw_data_dir):
-    if filename.endswith('.csv'):
+    if filename.endswith(".csv"):
         try:
             print(f"Analyzing {filename}...")
             file_path = os.path.join(raw_data_dir, filename)
@@ -75,7 +77,9 @@ for filename in os.listdir(raw_data_dir):
             reconstruction_errors = analyze_data(file_path)
 
             result_file_path = os.path.join(results_dir, f"analysis_{filename}")
-            pd.DataFrame(reconstruction_errors, columns=['Reconstruction_Error']).to_csv(result_file_path, index=False)
+            pd.DataFrame(
+                reconstruction_errors, columns=["Reconstruction_Error"]
+            ).to_csv(result_file_path, index=False)
             print(f"Analysis results saved to {result_file_path}")
         except Exception as e:
             print(f"Error processing {filename}: {e}")

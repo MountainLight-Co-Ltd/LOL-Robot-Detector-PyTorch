@@ -7,14 +7,14 @@ import torch
 import os
 import pandas as pd
 
-data_path = 'ready_for_training'
-model_path = 'mouse_movement_anomaly_detection_model.pth'
+data_path = "ready_for_training"
+model_path = "mouse_movement_anomaly_detection_model.pth"
 
 
 def load_and_combine_csv(directory):
     combined_data = pd.DataFrame()
     for filename in os.listdir(directory):
-        if filename.endswith('.csv'):
+        if filename.endswith(".csv"):
             file_path = os.path.join(directory, filename)
             data = pd.read_csv(file_path)
             combined_data = pd.concat([combined_data, data], ignore_index=True)
@@ -28,8 +28,9 @@ def eval_model(training_dir, sequence_length, test_size):
     n_features = flattened_sequences.shape[1]
 
     num_sequences = len(flattened_sequences) // sequence_length
-    sequences = flattened_sequences[:num_sequences * sequence_length].reshape(
-        (num_sequences, sequence_length, n_features))
+    sequences = flattened_sequences[: num_sequences * sequence_length].reshape(
+        (num_sequences, sequence_length, n_features)
+    )
 
     model = AutoEncoder_LSTM(n_features)
     model_wrapper = AutoEncoder_Wrapper(model)
