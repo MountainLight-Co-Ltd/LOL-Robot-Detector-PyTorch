@@ -20,9 +20,9 @@ The pre-trained model: `mouse_movement_anomaly_detection_model.pth`
 
 ## TODO
 
-1. Demo
-2. Trasnformer
-3. ...
+- [ ] Demo
+- [ ] Trasnformer
+- [ ] ...
 
 ## Usage
 
