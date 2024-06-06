@@ -28,6 +28,14 @@ The pre-trained model: `mouse_movement_anomaly_detection_model.pth`
 
 - **Tip**: If you are using Windows System, please use `python` instead of `python3`.
 
+### Download YOLO model
+
+- cursorDetector_n.pt:
+<https://drive.google.com/file/d/1FN_Xfey1k--QKS9_ps5i_YDrvEmx2KdK/view?usp=sharing>
+
+- cursorDetector_x.pt:
+<https://drive.google.com/file/d/1FZULNgxbfAVGk-93SG9VJF7XcLAKwo82/view?usp=sharing>
+
 ### Test
 
 - Run the following command in the Command Line with a `python3` command (for Ubuntu).
@@ -51,7 +59,7 @@ The pre-trained model: `mouse_movement_anomaly_detection_model.pth`
 
 - Optional 2: Use your own dataset
 
-  - **Data Preparation**: Use `cursurDetector.py` to read the mouse positions of your raw videos. The file will be saved in the `./mouse_positions` folder.
+  - **Data Preparation**: Use `cursurDetector.py` to read the mouse positions of your raw videos. The file will be saved in the `./mouse_positions` folder. Make sure you are downloaded the yolo model.
   - **Scaler Preparation**: Use `dataModifier.py` to extract the features of your raw mouse positions and use 'universal_scaler' to standrize them.
   - **Model Training**: Use `./new/train.py` to train your own model.
   - **Tip**: Make sure you are consistently using 1080p, 30fps videos.
